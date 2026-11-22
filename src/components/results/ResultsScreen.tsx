@@ -12,9 +12,9 @@ type Tier = 'gold' | 'silver' | 'bronze' | 'start'
 
 const TIER_INFO: Record<Tier, { badge: string; colors: [string, string] }> = {
   gold: { badge: 'Chemistry Detective', colors: ['#ffe27a', '#f0a81c'] },
-  silver: { badge: 'Sharp Observer', colors: ['#e9f3ff', '#8fb3d9'] },
+  silver: { badge: 'Sharp Observer', colors: ['#eef4fb', '#8fa9c6'] },
   bronze: { badge: 'Curious Experimenter', colors: ['#ffc59a', '#c8763c'] },
-  start: { badge: 'Lab Explorer', colors: ['#9ef3ff', '#3a9fcc'] },
+  start: { badge: 'Lab Explorer', colors: ['#bfe9ff', '#2a8cf0'] },
 }
 
 const CATEGORY_NAME: Record<ChallengeCategory, string> = {
@@ -75,14 +75,17 @@ export function ResultsScreen({
 
   const tried = (Object.keys(stats) as ChallengeCategory[]).filter((c) => stats[c].total > 0)
   const rate = (c: ChallengeCategory) => stats[c].right / stats[c].total
-  const best = tried.length ? tried.reduce((a, b) => (rate(b) > rate(a) ? b : a)) : null
+  // Highest success rate wins; ties go to the skill with more answers.
+  const better = (a: ChallengeCategory, b: ChallengeCategory) =>
+    rate(b) > rate(a) || (rate(b) === rate(a) && stats[b].total > stats[a].total) ? b : a
+  const best = tried.length ? tried.reduce(better) : null
   const weakest = tried.length > 1 ? tried.reduce((a, b) => (rate(b) < rate(a) ? b : a)) : null
 
   const notes: string[] = []
   if (tier === 'start') notes.push('Every scientist starts with a first experiment. Head back into the lab and dip your first litmus strip.')
-  if (best) notes.push(`Your strongest skill: ${CATEGORY_NAME[best].toLowerCase()} (${stats[best].right}/${stats[best].total} correct).`)
+  if (best) notes.push(`Your strongest skill: ${CATEGORY_NAME[best]} (${stats[best].right}/${stats[best].total} correct).`)
   if (weakest && weakest !== best && rate(weakest) < 0.8)
-    notes.push(`To level up, practise ${CATEGORY_NAME[weakest].toLowerCase()} — ${PRACTICE_TIP[weakest]}`)
+    notes.push(`To level up, practise ${CATEGORY_NAME[weakest]} — ${PRACTICE_TIP[weakest]}`)
   if (state.bestStreak >= 5) notes.push(`A streak of ${state.bestStreak} in a row shows real consistency!`)
   if (completed < TOTAL_EXPERIMENTS && tier !== 'start')
     notes.push(`${TOTAL_EXPERIMENTS - completed} experiments are still waiting if you want to push your score higher.`)
@@ -106,7 +109,7 @@ export function ResultsScreen({
   return (
     <main className="results">
       <motion.section
-        className="results-hero glass"
+        className="results-hero card"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -138,7 +141,7 @@ export function ResultsScreen({
         {cards.map((c, i) => (
           <motion.div
             key={c.label}
-            className="result-card glass"
+            className="result-card card"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 + i * 0.07 }}
@@ -152,7 +155,7 @@ export function ResultsScreen({
         ))}
       </section>
 
-      <section className="results-skills glass">
+      <section className="results-skills card">
         {(Object.keys(stats) as ChallengeCategory[]).map((c) => {
           const s = stats[c]
           const pct = s.total ? Math.round((s.right / s.total) * 100) : 0
@@ -219,7 +222,7 @@ function Medal({ colors }: { colors: [string, string] }) {
 }
 
 function Confetti() {
-  const colors = ['#3ee6ff', '#ffc857', '#4fe3a0', '#ff8fab', '#b994ff']
+  const colors = ['#2a8cf0', '#f2a20c', '#18a058', '#f2557a', '#8b7cf6']
   return (
     <div className="confetti" aria-hidden="true">
       {Array.from({ length: 36 }, (_, i) => (

@@ -1,9 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { useReducedMotion } from 'framer-motion'
-import { useSettings } from '../../state/settings'
 import './ambient.css'
 
-interface Mote {
+interface Bubble {
   x: number
   y: number
   r: number
@@ -13,11 +12,10 @@ interface Mote {
   alpha: number
 }
 
-/** Full-screen ambient lab atmosphere: soft light blobs + slow rising motes. */
+/** Light ambient atmosphere: pastel light blobs + slowly rising soap-like bubbles. */
 export function AmbientBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const reduce = useReducedMotion()
-  const { theme } = useSettings()
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -27,8 +25,9 @@ export function AmbientBackground() {
     let w = 0
     let h = 0
     let raf = 0
+    let prev = 0
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
-    const motes: Mote[] = []
+    const bubbles: Bubble[] = []
 
     const resize = () => {
       w = window.innerWidth
@@ -41,49 +40,50 @@ export function AmbientBackground() {
     }
     resize()
 
-    const count = Math.round(Math.min(55, (w * h) / 26000))
+    const count = Math.round(Math.min(34, (w * h) / 42000))
     for (let i = 0; i < count; i++) {
-      motes.push({
+      bubbles.push({
         x: Math.random() * w,
         y: Math.random() * h,
-        r: 0.6 + Math.random() * 2.2,
-        vy: 0.08 + Math.random() * 0.25,
+        r: 2 + Math.random() * 7,
+        vy: 0.12 + Math.random() * 0.3,
         drift: 0.3 + Math.random() * 0.8,
         phase: Math.random() * Math.PI * 2,
-        alpha: 0.15 + Math.random() * 0.45,
+        alpha: 0.12 + Math.random() * 0.22,
       })
     }
 
     const rgb = getComputedStyle(document.documentElement).getPropertyValue('--particle').trim()
 
     const draw = (t: number) => {
+      const k = prev ? Math.min(4, (t - prev) / 16.67) : 1
+      prev = t
       ctx.clearRect(0, 0, w, h)
-      for (const m of motes) {
+      for (const b of bubbles) {
         if (!reduce) {
-          m.y -= m.vy
-          m.x += Math.sin(t / 2400 + m.phase) * 0.12 * m.drift
-          if (m.y < -10) {
-            m.y = h + 10
-            m.x = Math.random() * w
+          b.y -= b.vy * k
+          b.x += Math.sin(t / 2600 + b.phase) * 0.15 * b.drift * k
+          if (b.y < -12) {
+            b.y = h + 12
+            b.x = Math.random() * w
           }
         }
-        const twinkle = 0.65 + 0.35 * Math.sin(t / 900 + m.phase)
         ctx.beginPath()
-        ctx.fillStyle = `rgba(${rgb}, ${m.alpha * twinkle})`
-        ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2)
+        ctx.strokeStyle = `rgba(${rgb}, ${b.alpha})`
+        ctx.lineWidth = 1.2
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2)
+        ctx.stroke()
+        ctx.beginPath()
+        ctx.fillStyle = `rgba(255, 255, 255, ${b.alpha * 2.5})`
+        ctx.arc(b.x - b.r * 0.35, b.y - b.r * 0.35, b.r * 0.25, 0, Math.PI * 2)
         ctx.fill()
-        if (m.r > 1.8) {
-          ctx.beginPath()
-          ctx.fillStyle = `rgba(${rgb}, ${0.06 * twinkle})`
-          ctx.arc(m.x, m.y, m.r * 4, 0, Math.PI * 2)
-          ctx.fill()
-        }
       }
       if (!reduce && !document.hidden) raf = requestAnimationFrame(draw)
     }
 
     const onVisible = () => {
       cancelAnimationFrame(raf)
+      prev = 0
       if (!document.hidden) raf = requestAnimationFrame(draw)
     }
 
@@ -95,15 +95,14 @@ export function AmbientBackground() {
       window.removeEventListener('resize', resize)
       document.removeEventListener('visibilitychange', onVisible)
     }
-  }, [reduce, theme])
+  }, [reduce])
 
   return (
     <div className="ambient" aria-hidden="true">
       <div className="ambient-blob ambient-blob-a" />
       <div className="ambient-blob ambient-blob-b" />
-      <div className="ambient-grid" />
+      <div className="ambient-blob ambient-blob-c" />
       <canvas ref={canvasRef} className="ambient-canvas" />
-      <div className="ambient-vignette" />
     </div>
   )
 }

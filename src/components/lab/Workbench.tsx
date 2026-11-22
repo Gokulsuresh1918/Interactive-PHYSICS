@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Ref } from 'react'
 import { motion, useAnimate, useReducedMotion } from 'framer-motion'
-import { RotateCcw } from 'lucide-react'
 import type { Conductivity, Sample } from '../../data/samples'
 import { LITMUS_COLORS, litmusTest, phColor } from '../../lib/chemistry'
 import type { LitmusOutcome } from '../../lib/chemistry'
@@ -26,7 +25,10 @@ interface WorkbenchProps {
   pourKey: string
   tests: BenchTests
   onTestComplete: (patch: BenchTests) => void
-  onRinse: () => void
+  /** Which tools this step offers (keeps each screen focused). */
+  tools: ToolId[]
+  /** Called when an animation starts/stops so parents can lock navigation. */
+  onBusyChange?: (busy: boolean) => void
 }
 
 /* Scene geometry (SVG user units) */
@@ -36,12 +38,12 @@ const BOTTOM = 300
 const SLOT_X: Record<'red' | 'blue', number> = { red: 356, blue: 406 }
 const SLOT_Y = 100
 const BULB = { x: 492, y: 150 }
-const MASK_COLOR = '#cfe3f0'
+const MASK_COLOR = '#d9e6f2'
 const CONDUCT_LEVEL: Record<Conductivity, number> = { none: 0, weak: 0.45, strong: 1 }
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
-export function Workbench({ sample, masked, label, pourKey, tests, onTestComplete, onRinse }: WorkbenchProps) {
+export function Workbench({ sample, masked, label, pourKey, tests, onTestComplete, tools, onBusyChange }: WorkbenchProps) {
   const [scope, animate] = useAnimate<SVGSVGElement>()
   const reduce = useReducedMotion()
   const speed = reduce ? 0.15 : 1
@@ -53,7 +55,6 @@ export function Workbench({ sample, masked, label, pourKey, tests, onTestComplet
   const [dropHover, setDropHover] = useState(false)
   const runId = useRef(0)
   const beakerHit = useRef<SVGRectElement>(null)
-  const firstPour = useRef(true)
 
   const toolRef = useRef<SVGGElement>(null)
   const wetRef = useRef<SVGRectElement>(null)
@@ -67,14 +68,17 @@ export function Workbench({ sample, masked, label, pourKey, tests, onTestComplet
     setActive(null)
     setTint(null)
     setBulbLevel(0)
-    if (firstPour.current) firstPour.current = false
-    else sfx.pour()
+    sfx.pour()
   }, [pourKey])
+
+  useEffect(() => {
+    onBusyChange?.(!!active)
+  }, [active, onBusyChange])
 
   const baseColor = masked ? MASK_COLOR : sample.liquidColor
   const indicatorColor = phColor(sample.ph)
   const liquidColor = tint ?? (tests.indicator ? indicatorColor : baseColor)
-  const liquidOpacity = tint || tests.indicator ? 0.88 : masked ? 0.42 : sample.liquidOpacity
+  const liquidOpacity = tint || tests.indicator ? 0.9 : masked ? 0.5 : Math.max(0.4, sample.liquidOpacity)
   const showFizz = !masked && sample.fizzy
 
   const run = useCallback(
@@ -184,8 +188,12 @@ export function Workbench({ sample, masked, label, pourKey, tests, onTestComplet
       })
 
     return () => {
+      // runId is a plain counter (not a DOM ref): bumping it cancels this run.
+      // oxlint-disable-next-line react-hooks/exhaustive-deps
       runId.current++
     }
+    // The sequence must start exactly once per tool use, so it only depends on `active`.
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [active])
 
   // If StrictMode / cleanup cancelled a run, make sure we don't stay stuck "busy".
@@ -201,34 +209,32 @@ export function Workbench({ sample, masked, label, pourKey, tests, onTestComplet
   }
 
   const rackBulb = tests.conductivity ? CONDUCT_LEVEL[tests.conductivity] : 0
+  const showStrips = tools.includes('red') || tools.includes('blue')
+  const showBulb = tools.includes('conductivity')
+  const showRack = showStrips || showBulb
+  // Centre the beaker when there is no results rack to show.
+  const viewBox = showRack ? '0 -40 560 380' : '20 -40 360 380'
 
   return (
     <div className="bench">
-      <div className="bench-head">
-        <div>
-          <p className="eyebrow">Test station</p>
-          <h3 className="bench-title">{label}</h3>
-        </div>
-        <button className="btn btn-ghost btn-sm" onClick={onRinse} disabled={!!active} title="Pour a fresh sample">
-          <RotateCcw size={15} /> Rinse &amp; refill
-        </button>
-      </div>
-
       <div className={`bench-stage${dropHover ? ' is-drop-target' : ''}`}>
-        <svg ref={scope} className="bench-svg" viewBox="0 -40 560 380" role="img" aria-label={`Beaker containing ${label}`}>
+        <svg ref={scope} className="bench-svg" viewBox={viewBox} role="img" aria-label={`Beaker containing ${label}`}>
           <defs>
+            <clipPath id="liquid-only">
+              <path d={`M122 ${SURFACE} V${BOTTOM - 14} Q122 ${BOTTOM} 136 ${BOTTOM} H264 Q278 ${BOTTOM} 278 ${BOTTOM - 14} V${SURFACE} Z`} />
+            </clipPath>
             <clipPath id="beaker-inner">
               <path d={`M122 96 V${BOTTOM - 14} Q122 ${BOTTOM} 136 ${BOTTOM} H264 Q278 ${BOTTOM} 278 ${BOTTOM - 14} V96 Z`} />
             </clipPath>
             <linearGradient id="glass-front" x1="0" x2="1">
-              <stop offset="0" stopColor="#d8f3ff" stopOpacity="0.2" />
-              <stop offset="0.18" stopColor="#d8f3ff" stopOpacity="0.04" />
-              <stop offset="0.8" stopColor="#d8f3ff" stopOpacity="0.02" />
-              <stop offset="1" stopColor="#d8f3ff" stopOpacity="0.16" />
+              <stop offset="0" stopColor="#ffffff" stopOpacity="0.75" />
+              <stop offset="0.18" stopColor="#ffffff" stopOpacity="0.12" />
+              <stop offset="0.8" stopColor="#ffffff" stopOpacity="0.05" />
+              <stop offset="1" stopColor="#ffffff" stopOpacity="0.55" />
             </linearGradient>
             <linearGradient id="bench-top" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#1b3a66" />
-              <stop offset="1" stopColor="#0a1a36" />
+              <stop offset="0" stopColor="#e4eef8" />
+              <stop offset="1" stopColor="#d2e1f0" />
             </linearGradient>
             <linearGradient id="liquid-shade" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0" stopColor="#ffffff" stopOpacity="0.18" />
@@ -242,14 +248,14 @@ export function Workbench({ sample, masked, label, pourKey, tests, onTestComplet
           </defs>
 
           {/* bench surface */}
-          <rect x="-20" y={BOTTOM + 4} width="600" height="60" fill="url(#bench-top)" />
-          <rect x="-20" y={BOTTOM + 4} width="600" height="2" fill="#3ee6ff" opacity="0.25" />
-          <ellipse cx={CX} cy={BOTTOM + 6} rx="100" ry="8" fill="#000" opacity="0.35" />
+          <rect x="-1000" y={BOTTOM + 4} width="2600" height="60" fill="url(#bench-top)" />
+          <rect x="-1000" y={BOTTOM + 4} width="2600" height="2" fill="#ffffff" />
+          <ellipse cx={CX} cy={BOTTOM + 6} rx="96" ry="7" fill="#5c7ea3" opacity="0.18" />
 
           {/* beaker back wall */}
           <path
             d={`M122 96 V${BOTTOM - 14} Q122 ${BOTTOM} 136 ${BOTTOM} H264 Q278 ${BOTTOM} 278 ${BOTTOM - 14} V96 Z`}
-            fill="rgba(160,220,255,0.05)"
+            fill="rgba(210,230,248,0.35)"
           />
 
           {/* active tool (behind liquid so it looks submerged) */}
@@ -305,6 +311,7 @@ export function Workbench({ sample, masked, label, pourKey, tests, onTestComplet
             {/* indicator bloom spreading from the drop point */}
             {bloom > 0 && (
               <motion.circle
+                clipPath="url(#liquid-only)"
                 key={`bloom-${bloom}`}
                 cx={CX}
                 cy={SURFACE + 4}
@@ -350,16 +357,16 @@ export function Workbench({ sample, masked, label, pourKey, tests, onTestComplet
           <path
             d={`M114 90 Q122 92 122 100 V${BOTTOM - 14} Q122 ${BOTTOM} 136 ${BOTTOM} H264 Q278 ${BOTTOM} 278 ${BOTTOM - 14} V100 Q278 92 286 90`}
             fill="url(#glass-front)"
-            stroke={dropHover ? 'var(--accent)' : '#cdeeff'}
-            strokeOpacity={dropHover ? 1 : 0.6}
+            stroke={dropHover ? 'var(--sky)' : '#93aecb'}
+            strokeOpacity={dropHover ? 1 : 0.9}
             strokeWidth="3"
             strokeLinecap="round"
             className="beaker-glass"
           />
-          <path d={`M134 112 V${BOTTOM - 24}`} stroke="#fff" strokeOpacity="0.22" strokeWidth="6" strokeLinecap="round" />
+          <path d={`M134 112 V${BOTTOM - 24}`} stroke="#fff" strokeOpacity="0.8" strokeWidth="6" strokeLinecap="round" />
           {[0, 1, 2, 3].map((i) => (
             <g key={i}>
-              <line x1="252" x2="268" y1={130 + i * 40} y2={130 + i * 40} stroke="#cdeeff" strokeOpacity="0.5" strokeWidth="1.5" />
+              <line x1="252" x2="268" y1={130 + i * 40} y2={130 + i * 40} stroke="#7f9bba" strokeOpacity="0.7" strokeWidth="1.5" />
               <text x="248" y={134 + i * 40} textAnchor="end" className="beaker-mark">
                 {200 - i * 50}
               </text>
@@ -378,12 +385,13 @@ export function Workbench({ sample, masked, label, pourKey, tests, onTestComplet
           <rect ref={beakerHit} x="100" y="60" width="200" height="250" fill="transparent" />
 
           {/* results rack */}
+          {showRack && (
           <g className="rack">
             <text x="430" y="-14" textAnchor="middle" className="rack-title">
               RESULTS RACK
             </text>
             <rect x="338" y="84" width="200" height="8" rx="4" className="rack-bar" />
-            {(['red', 'blue'] as const).map((paper) => {
+            {showStrips && (['red', 'blue'] as const).map((paper) => {
               const outcome = tests[paper]
               const showStatic = outcome && active !== paper
               return (
@@ -409,20 +417,24 @@ export function Workbench({ sample, masked, label, pourKey, tests, onTestComplet
               )
             })}
 
+            {showBulb && (
             <g className="rack-bulb">
               <circle cx={BULB.x} cy={BULB.y} r="34" fill="url(#bulb-glow)" opacity={rackBulb} className="bulb-halo" />
-              <circle cx={BULB.x} cy={BULB.y} r="15" fill={rackBulb ? '#fff3b0' : 'rgba(200,230,255,0.08)'} fillOpacity={rackBulb ? 0.4 + rackBulb * 0.6 : 1} stroke="#cdeeff" strokeOpacity="0.6" strokeWidth="2" />
-              <path d={`M${BULB.x - 5} ${BULB.y + 3} l3 -6 l4 6 l3 -6`} stroke={rackBulb ? '#ff9a1a' : '#6e88ab'} strokeWidth="1.5" fill="none" />
-              <rect x={BULB.x - 8} y={BULB.y + 14} width="16" height="12" rx="2" fill="#6e88ab" />
+              <circle cx={BULB.x} cy={BULB.y} r="15" fill={rackBulb ? '#fff3b0' : '#f4f8fc'} fillOpacity={rackBulb ? 0.4 + rackBulb * 0.6 : 1} stroke="#93aecb" strokeWidth="2" />
+              <path d={`M${BULB.x - 5} ${BULB.y + 3} l3 -6 l4 6 l3 -6`} stroke={rackBulb ? '#ff9a1a' : '#93aecb'} strokeWidth="1.5" fill="none" />
+              <rect x={BULB.x - 8} y={BULB.y + 14} width="16" height="12" rx="2" fill="#9fb3c9" />
               <text x={BULB.x} y="236" textAnchor="middle" className="rack-label">
                 BULB
               </text>
             </g>
+            )}
           </g>
+          )}
         </svg>
       </div>
 
       <ToolTray
+        tools={tools}
         busy={!!active}
         activeTool={active}
         done={{
@@ -464,7 +476,7 @@ function LitmusStrip({
         rx="3"
         style={{ fill: wetColor ?? c.wet, transformBox: 'fill-box', transformOrigin: '50% 100%' }}
       />
-      <rect x="-2" y="-4" width="26" height="14" rx="3" fill="#24324d" stroke="#9fb8d8" strokeOpacity="0.5" />
+      <rect x="-2" y="-4" width="26" height="14" rx="3" fill="#5b6f8c" />
     </g>
   )
 }
@@ -479,11 +491,11 @@ function Dropper({
   return (
     <g>
       <g ref={bulbRef} style={{ transformBox: 'fill-box', transformOrigin: '50% 100%' }}>
-        <rect x="0" y="0" width="24" height="32" rx="11" fill="#3b4f7a" />
+        <rect x="0" y="0" width="24" height="32" rx="11" fill="#8b7cf6" />
         <rect x="4" y="4" width="6" height="18" rx="3" fill="#fff" opacity="0.18" />
       </g>
       <rect x="1" y="30" width="22" height="8" rx="2" fill="#2a3a5c" />
-      <path d="M5 38 H19 V104 L13 116 H11 L5 104 Z" fill="rgba(200,235,255,0.25)" stroke="#cdeeff" strokeOpacity="0.7" strokeWidth="1.5" />
+      <path d="M5 38 H19 V104 L13 116 H11 L5 104 Z" fill="rgba(235,245,255,0.7)" stroke="#7f9bba" strokeWidth="1.5" />
       <path d="M7 60 H17 V104 L12.5 113 H11.5 L7 104 Z" fill="#59c06b" opacity="0.85" />
       <g ref={dropRef} style={{ opacity: 0 }}>
         <path d="M12 116 q5 8 0 12 q-5 -4 0 -12z" fill="#59c06b" />
@@ -496,10 +508,10 @@ function Tester({ glowRef, level }: { glowRef: Ref<SVGCircleElement>; level: num
   return (
     <g>
       <circle ref={glowRef} cx="35" cy="-20" r="34" fill="url(#bulb-glow)" style={{ opacity: 0 }} />
-      <circle cx="35" cy="-20" r="13" fill={level ? '#fff3b0' : 'rgba(200,230,255,0.15)'} fillOpacity={level ? 0.4 + level * 0.6 : 1} stroke="#cdeeff" strokeWidth="2" />
+      <circle cx="35" cy="-20" r="13" fill={level ? '#fff3b0' : '#f4f8fc'} fillOpacity={level ? 0.4 + level * 0.6 : 1} stroke="#7f9bba" strokeWidth="2" />
       <path d="M30 -17 l3 -6 l4 6 l3 -6" stroke={level ? '#ff9a1a' : '#9fb8d8'} strokeWidth="1.5" fill="none" />
       <rect x="27" y="-8" width="16" height="10" rx="2" fill="#7d93b5" />
-      <rect x="0" y="2" width="70" height="34" rx="8" fill="#22355c" stroke="#9fb8d8" strokeOpacity="0.5" />
+      <rect x="0" y="2" width="70" height="34" rx="8" fill="#4b6487" />
       <rect x="8" y="12" width="30" height="14" rx="3" fill="#ffc857" opacity="0.85" />
       <text x="52" y="24" fontSize="10" fill="#cdeeff" fontFamily="var(--font-mono)">
         +−

@@ -1,57 +1,38 @@
-import { createContext, useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { setSoundEnabled } from '../lib/sound'
 
-export type ThemeId = 'aqua' | 'nebula'
-
 interface Settings {
   sound: boolean
-  theme: ThemeId
   toggleSound: () => void
-  toggleTheme: () => void
 }
 
 const KEY = 'science-playground/settings'
 
-function read(): { sound: boolean; theme: ThemeId } {
+function readSound(): boolean {
   try {
     const v = JSON.parse(localStorage.getItem(KEY) ?? '{}')
-    return { sound: v.sound ?? true, theme: v.theme === 'nebula' ? 'nebula' : 'aqua' }
+    return v.sound ?? true
   } catch {
-    return { sound: true, theme: 'aqua' }
+    return true
   }
 }
 
 const SettingsContext = createContext<Settings | null>(null)
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [initial] = useState(read)
-  const [sound, setSound] = useState(initial.sound)
-  const [theme, setTheme] = useState<ThemeId>(initial.theme)
-
-  // Layout effect so the theme attribute is set before children read CSS variables.
-  useLayoutEffect(() => {
-    document.documentElement.dataset.theme = theme
-  }, [theme])
+  const [sound, setSound] = useState(readSound)
 
   useEffect(() => {
     setSoundEnabled(sound)
     try {
-      localStorage.setItem(KEY, JSON.stringify({ sound, theme }))
+      localStorage.setItem(KEY, JSON.stringify({ sound }))
     } catch {
-      /* ignore */
+      /* storage unavailable — ignore */
     }
-  }, [sound, theme])
+  }, [sound])
 
-  const value = useMemo(
-    () => ({
-      sound,
-      theme,
-      toggleSound: () => setSound((s) => !s),
-      toggleTheme: () => setTheme((t) => (t === 'aqua' ? 'nebula' : 'aqua')),
-    }),
-    [sound, theme],
-  )
+  const value = useMemo(() => ({ sound, toggleSound: () => setSound((s) => !s) }), [sound])
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>
 }
 

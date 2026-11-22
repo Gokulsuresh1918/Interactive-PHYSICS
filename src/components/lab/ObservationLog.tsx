@@ -10,7 +10,7 @@ interface Entry {
   color: string
 }
 
-export function observationsFor(tests: BenchTests, sample: Sample): Entry[] {
+function observationsFor(tests: BenchTests, sample: Sample): Entry[] {
   const out: Entry[] = []
   for (const paper of ['red', 'blue'] as const) {
     const o = tests[paper]

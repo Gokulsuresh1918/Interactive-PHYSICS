@@ -1,12 +1,14 @@
 .sidebar {
   position: sticky;
-  top: 16px;
+  top: 86px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  padding: 20px;
-  max-height: calc(100vh - 32px);
-  overflow-y: auto;
+  gap: 14px;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow);
 }
 
 .sb-profile {
@@ -16,17 +18,16 @@
 }
 .sb-avatar {
   flex: none;
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   border-radius: 14px;
   display: grid;
   place-items: center;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 20px;
-  color: var(--accent-ink);
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  box-shadow: 0 6px 20px -8px var(--accent);
+  font-size: 19px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--sky), var(--teal));
 }
 .sb-who {
   display: flex;
@@ -36,8 +37,8 @@
 .sb-name {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 17px;
-  letter-spacing: 0.04em;
+  font-size: 16px;
+  letter-spacing: 0.03em;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -45,15 +46,15 @@
 .sb-rank {
   font-size: 12.5px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--lavender);
 }
 
 .sb-score {
   position: relative;
-  padding: 16px;
+  padding: 14px 16px;
   border-radius: var(--radius);
-  background: linear-gradient(150deg, rgba(255, 200, 87, 0.16), rgba(255, 200, 87, 0.02));
-  border: 1px solid rgba(255, 200, 87, 0.3);
+  background: linear-gradient(135deg, #fff8e6, #fffdf6);
+  border: 1px solid var(--warn-border);
   display: flex;
   flex-direction: column;
 }
@@ -63,6 +64,7 @@
   gap: 6px;
   font-family: var(--font-mono);
   font-size: 11px;
+  font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--warn);
@@ -70,21 +72,27 @@
 .sb-score-value {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 46px;
+  font-size: 42px;
   line-height: 1.05;
   font-variant-numeric: tabular-nums;
-  color: #fff6dc;
-  text-shadow: 0 0 26px rgba(255, 200, 87, 0.35);
+  color: var(--text);
 }
 .sb-gain {
   position: absolute;
   right: 16px;
-  top: 30px;
+  top: 26px;
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 22px;
-  color: var(--warn);
-  text-shadow: 0 0 14px rgba(255, 200, 87, 0.7);
+  color: var(--good);
+  pointer-events: none;
+}
+.sb-flash {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 2px solid var(--gold);
+  box-shadow: 0 0 18px rgba(242, 162, 12, 0.35);
   pointer-events: none;
 }
 
@@ -97,36 +105,37 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 1px;
   padding: 10px 4px;
   border-radius: 14px;
-  background: rgba(4, 12, 30, 0.45);
-  border: 1px solid var(--border);
+  background: var(--surface-2);
 }
 .sb-stat-icon {
   display: grid;
   color: var(--text-faint);
 }
+.sb-streak.is-hot {
+  background: #fff3e8;
+}
 .sb-streak.is-hot .sb-stat-icon {
   color: var(--flame);
-  filter: drop-shadow(0 0 6px rgba(255, 155, 61, 0.6));
 }
 .sb-icon-good {
   color: var(--good);
 }
 .sb-icon-accent {
-  color: var(--accent);
+  color: var(--sky);
 }
 .sb-stat-value {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 19px;
+  font-size: 18px;
   font-variant-numeric: tabular-nums;
 }
 .sb-stat-label {
   font-size: 11px;
   color: var(--text-faint);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .sb-progress-head {
@@ -138,16 +147,15 @@
   margin-bottom: 6px;
 }
 .sb-progress-track {
-  height: 10px;
+  height: 9px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--surface-2);
   overflow: hidden;
 }
 .sb-progress-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent-2), var(--accent));
-  box-shadow: 0 0 12px var(--accent);
+  background: linear-gradient(90deg, var(--teal), var(--sky));
 }
 .sb-best {
   margin-top: 6px;
@@ -155,50 +163,42 @@
   color: var(--text-faint);
 }
 
-.sb-finish {
-  margin-top: auto;
-}
-
-/* Compact horizontal scoreboard on small screens */
-@media (max-width: 1080px) {
+/* Compact score bar on smaller screens */
+@media (max-width: 1100px) {
   .sidebar {
-    position: sticky;
-    top: 8px;
+    top: 68px;
     z-index: 30;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    gap: 10px 14px;
+    gap: 8px 12px;
     padding: 10px 14px;
-    max-height: none;
-    overflow: visible;
     border-radius: var(--radius);
   }
   .sb-profile {
-    flex: 1 1 160px;
+    flex: 1 1 150px;
     min-width: 0;
   }
   .sb-avatar {
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
-    border-radius: 11px;
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+    border-radius: 10px;
   }
   .sb-score {
     flex-direction: row;
     align-items: center;
     gap: 10px;
-    padding: 6px 14px;
+    padding: 4px 14px;
   }
   .sb-score-value {
-    font-size: 26px;
+    font-size: 24px;
   }
   .sb-gain {
-    top: -6px;
-    font-size: 17px;
+    top: -8px;
+    font-size: 16px;
   }
   .sb-stats {
-    flex: 0 1 auto;
     display: flex;
     gap: 6px;
   }
@@ -216,29 +216,14 @@
   .sb-progress {
     flex: 1 1 140px;
   }
-  .sb-progress-head {
-    margin-bottom: 4px;
-  }
   .sb-best {
     display: none;
-  }
-  .sb-finish {
-    margin-top: 0;
-    min-height: 36px;
   }
 }
 
 @media (max-width: 560px) {
-  .sidebar {
-    gap: 8px 10px;
-  }
-  .sb-progress {
+  .sb-progress,
+  .sb-rank {
     display: none;
-  }
-  .sb-finish {
-    flex: 1 1 auto;
-    min-height: 34px;
-    padding: 0 12px;
-    font-size: 12.5px;
   }
 }

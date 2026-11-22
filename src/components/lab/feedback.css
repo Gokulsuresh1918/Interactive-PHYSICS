@@ -1,26 +1,26 @@
 .feedback {
   position: relative;
-  padding: 14px 16px;
+  padding: 18px 20px;
   border-radius: var(--radius);
   border: 1px solid;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .feedback-correct {
   background: var(--good-soft);
-  border-color: rgba(79, 227, 160, 0.4);
+  border-color: var(--good-border);
   --tone: var(--good);
 }
 .feedback-close {
   background: var(--warn-soft);
-  border-color: rgba(255, 200, 87, 0.4);
+  border-color: var(--warn-border);
   --tone: var(--warn);
 }
 .feedback-wrong {
   background: var(--gentle-soft);
-  border-color: rgba(255, 159, 138, 0.35);
+  border-color: var(--gentle-border);
   --tone: var(--gentle);
 }
 
@@ -31,7 +31,7 @@
 }
 .feedback-head h4 {
   flex: 1;
-  font-size: 15.5px;
+  font-size: 18px;
 }
 .feedback-icon {
   color: var(--tone);
@@ -41,18 +41,18 @@
   font-family: var(--font-mono);
   font-weight: 800;
   font-size: 15px;
-  color: var(--tone);
-  padding: 2px 10px;
+  color: #fff;
+  padding: 3px 12px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.25);
+  background: var(--tone);
 }
 
 .feedback-body {
-  font-size: 13.5px;
+  font-size: 14.5px;
   color: var(--text-dim);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 .feedback-body strong {
   color: var(--text);
@@ -60,34 +60,37 @@
 
 .feedback-float {
   position: absolute;
-  right: 18px;
-  top: 6px;
+  right: 22px;
+  top: 4px;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 22px;
+  font-size: 24px;
   color: var(--tone);
   pointer-events: none;
-  text-shadow: 0 0 18px var(--tone);
 }
 
 .burst {
   position: absolute;
   left: 50%;
-  top: 30px;
+  top: 34px;
   pointer-events: none;
 }
 .burst-dot {
   position: absolute;
-  width: 7px;
-  height: 7px;
-  margin: -3.5px;
+  width: 8px;
+  height: 8px;
+  margin: -4px;
   border-radius: 50%;
 }
-.burst-correct {
+.burst-correct:nth-child(3n) {
   background: var(--good);
-  box-shadow: 0 0 10px var(--good);
+}
+.burst-correct:nth-child(3n + 1) {
+  background: var(--sky);
+}
+.burst-correct:nth-child(3n + 2) {
+  background: var(--gold);
 }
 .burst-close {
-  background: var(--warn);
-  box-shadow: 0 0 10px var(--warn);
+  background: var(--gold);
 }

@@ -1,51 +1,32 @@
-import { FlaskConical, LayoutGrid, Palette, Volume2, VolumeX } from 'lucide-react'
+import { Flag, FlaskConical, Volume2, VolumeX } from 'lucide-react'
 import { useSettings } from '../../state/settings'
-import { sfx } from '../../lib/sound'
 import './topbar.css'
 
 interface TopBarProps {
-  topicTitle?: string
-  onTopics?: () => void
+  subtitle?: string
+  onFinish?: () => void
 }
 
-export function TopBar({ topicTitle, onTopics }: TopBarProps) {
-  const { sound, toggleSound, theme, toggleTheme } = useSettings()
+export function TopBar({ subtitle, onFinish }: TopBarProps) {
+  const { sound, toggleSound } = useSettings()
   return (
     <header className="topbar">
       <div className="topbar-brand">
         <span className="topbar-logo">
           <FlaskConical size={18} />
         </span>
-        <span className="topbar-name">Science Playground</span>
-        {topicTitle && (
-          <>
-            <span className="topbar-sep">/</span>
-            <span className="topbar-topic">{topicTitle}</span>
-          </>
-        )}
+        <span className="topbar-name">SCIENCE PLAYGROUND</span>
+        {subtitle && <span className="topbar-topic">{subtitle}</span>}
       </div>
       <div className="topbar-actions">
-        {onTopics && (
-          <button className="btn btn-ghost btn-sm" onClick={onTopics}>
-            <LayoutGrid size={15} /> <span className="topbar-hide-sm">All topics</span>
+        {onFinish && (
+          <button className="btn btn-sm" onClick={onFinish}>
+            <Flag size={15} /> <span className="topbar-hide-sm">Finish &amp; see results</span>
           </button>
         )}
         <button
-          className="btn btn-ghost btn-icon"
-          onClick={() => {
-            toggleTheme()
-            sfx.click()
-          }}
-          aria-label={`Switch lab theme (current: ${theme === 'aqua' ? 'Aqua' : 'Nebula'})`}
-          title={`Theme: ${theme === 'aqua' ? 'Aqua lab' : 'Nebula lab'}`}
-        >
-          <Palette size={17} />
-        </button>
-        <button
-          className={`btn btn-ghost btn-icon${sound ? '' : ' is-off'}`}
-          onClick={() => {
-            toggleSound()
-          }}
+          className={`btn btn-icon${sound ? '' : ' is-off'}`}
+          onClick={toggleSound}
           aria-pressed={sound}
           aria-label={sound ? 'Mute sound effects' : 'Turn sound effects on'}
           title={sound ? 'Sound on' : 'Sound off'}

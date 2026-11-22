@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Atom, Droplets, FlaskConical, Search, Trophy } from 'lucide-react'
+import { ArrowRight, Droplets, FlaskConical, Search, Trophy } from 'lucide-react'
 import { HeroLabScene } from './HeroLabScene'
 import { sfx } from '../../lib/sound'
 import './entry.css'
@@ -11,7 +11,6 @@ const TITLE = 'SCIENCE PLAYGROUND'
 const FEATURES = [
   { icon: Droplets, label: 'Litmus tests' },
   { icon: FlaskConical, label: 'Universal indicator' },
-  { icon: Atom, label: 'Molecule view' },
   { icon: Search, label: 'Mystery samples' },
   { icon: Trophy, label: 'Scores & streaks' },
 ]
@@ -43,7 +42,7 @@ export function EntryScreen({ onStart }: { onStart: (name: string) => void }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          Virtual Science Laboratory
+          Acids, Bases &amp; pH
         </motion.p>
 
         <h1 className="entry-title" aria-label={TITLE}>
@@ -70,10 +69,13 @@ export function EntryScreen({ onStart }: { onStart: (name: string) => void }) {
           transition={{ delay: 0.9 }}
         >
           Discover science. Experiment. Explore.
+          <span className="entry-welcome">
+            Step into the virtual lab, test real-world liquids and find out what makes them acidic, basic or neutral.
+          </span>
         </motion.p>
 
         <motion.form
-          className="entry-card glass"
+          className="entry-card card"
           onSubmit={submit}
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}

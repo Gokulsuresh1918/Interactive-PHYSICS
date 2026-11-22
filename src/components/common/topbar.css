@@ -1,9 +1,15 @@
 .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 14px 0;
+  padding: 10px clamp(12px, 2vw, 28px);
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
 }
 
 .topbar-brand {
@@ -14,26 +20,27 @@
 }
 .topbar-logo {
   flex: none;
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   display: grid;
   place-items: center;
   border-radius: 11px;
-  color: var(--accent-ink);
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  background: linear-gradient(135deg, var(--sky), var(--teal));
 }
 .topbar-name {
   font-family: var(--font-display);
   font-weight: 800;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.06em;
   white-space: nowrap;
 }
-.topbar-sep {
-  color: var(--text-faint);
-}
 .topbar-topic {
-  color: var(--text-dim);
-  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--teal-soft);
+  color: #0b7f74;
+  font-size: 13px;
+  font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -52,8 +59,10 @@
 
 @media (max-width: 640px) {
   .topbar-hide-sm,
-  .topbar-sep,
   .topbar-topic {
     display: none;
+  }
+  .topbar-name {
+    font-size: 14px;
   }
 }

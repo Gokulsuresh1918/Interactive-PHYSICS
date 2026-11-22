@@ -21,6 +21,8 @@ export interface Sample {
   /** Natural colour of the liquid before any indicator is added. */
   liquidColor: string
   liquidOpacity: number
+  /** Bottle cap colour on the sample shelf. */
+  cap: string
   cloudy?: boolean
   fizzy?: boolean
   conductivity: Conductivity
@@ -42,6 +44,7 @@ const NEITHER = 'Reference data: no sour or slippery character recorded.'
 export const SAMPLES: Sample[] = [
   {
     id: 'lemon',
+    cap: '#f5b800',
     name: 'Lemon Juice',
     ph: 2,
     phRange: [2, 2],
@@ -58,6 +61,7 @@ export const SAMPLES: Sample[] = [
   },
   {
     id: 'vinegar',
+    cap: '#c0843d',
     name: 'Vinegar',
     ph: 3,
     phRange: [3, 3],
@@ -73,6 +77,7 @@ export const SAMPLES: Sample[] = [
   },
   {
     id: 'orange',
+    cap: '#f97316',
     name: 'Orange Juice',
     ph: 3.5,
     phRange: [3, 4],
@@ -89,6 +94,7 @@ export const SAMPLES: Sample[] = [
   },
   {
     id: 'soda',
+    cap: '#e0445a',
     name: 'Soda',
     ph: 3.5,
     phRange: [3, 4],
@@ -105,6 +111,7 @@ export const SAMPLES: Sample[] = [
   },
   {
     id: 'water',
+    cap: '#2a8cf0',
     name: 'Pure Water',
     ph: 7,
     phRange: [7, 7],
@@ -120,6 +127,7 @@ export const SAMPLES: Sample[] = [
   },
   {
     id: 'salt',
+    cap: '#12b3a2',
     name: 'Salt Water',
     ph: 7,
     phRange: [7, 7],
@@ -135,6 +143,7 @@ export const SAMPLES: Sample[] = [
   },
   {
     id: 'bakingsoda',
+    cap: '#8b7cf6',
     name: 'Baking Soda Solution',
     ph: 8.5,
     phRange: [8, 9],
@@ -151,6 +160,7 @@ export const SAMPLES: Sample[] = [
   },
   {
     id: 'soap',
+    cap: '#ec6fb5',
     name: 'Soap Solution',
     ph: 9.5,
     phRange: [9, 10],
@@ -167,6 +177,7 @@ export const SAMPLES: Sample[] = [
   },
   {
     id: 'ammonia',
+    cap: '#5b6fd8',
     name: 'Ammonia Cleaner',
     ph: 11.5,
     phRange: [11, 12],

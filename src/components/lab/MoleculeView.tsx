@@ -12,10 +12,10 @@ import './molecule.css'
  * The balance of H⁺ vs OH⁻ (set by pH) decides which form wins.
  */
 
-const ACID_FORM = '#ffd23f'
-const BASE_FORM = '#4c86ff'
-const H_ION = '#ff6f91'
-const OH_ION = '#3ee6ff'
+const ACID_FORM = '#ffc928'
+const BASE_FORM = '#3f7cf5'
+const H_ION = '#f2557a'
+const OH_ION = '#13b5c9'
 const N_IND = 10
 const H = 300
 
@@ -206,14 +206,14 @@ export function MoleculeView({ ph }: { ph: number }) {
         ctx.arc(0, 0, 6, 0, Math.PI * 2)
         ctx.fill()
         ctx.shadowBlur = 0
-        ctx.fillStyle = '#2b0614'
+        ctx.fillStyle = '#ffffff'
         ctx.font = '700 8px "JetBrains Mono Variable", monospace'
         ctx.textAlign = 'center'
         ctx.fillText('H⁺', 0, 3)
       } else {
         ctx.globalAlpha = ion.kind === 'H2O' ? Math.max(0, ion.life) * 0.8 : 1
-        const o = ion.kind === 'H2O' ? '#9fc4ff' : OH_ION
-        ctx.fillStyle = '#ffffff'
+        const o = ion.kind === 'H2O' ? '#8fb3e0' : OH_ION
+        ctx.fillStyle = '#dfe9f4'
         ctx.beginPath()
         ctx.arc(8, -5, 3.5, 0, Math.PI * 2)
         if (ion.kind === 'H2O') ctx.arc(-8, -5, 3.5, 0, Math.PI * 2)
@@ -225,7 +225,7 @@ export function MoleculeView({ ph }: { ph: number }) {
         ctx.arc(0, 0, 7, 0, Math.PI * 2)
         ctx.fill()
         ctx.shadowBlur = 0
-        ctx.fillStyle = '#04202a'
+        ctx.fillStyle = '#ffffff'
         ctx.font = '700 7px "JetBrains Mono Variable", monospace'
         ctx.textAlign = 'center'
         ctx.fillText(ion.kind === 'OH' ? 'OH⁻' : 'H₂O', 0, 2.5)
@@ -248,7 +248,7 @@ export function MoleculeView({ ph }: { ph: number }) {
       }
       ctx.rotate(d.angle)
       // glow
-      ctx.fillStyle = c + '33'
+      ctx.fillStyle = c + '30'
       ctx.beginPath()
       ctx.arc(0, 0, 20, 0, Math.PI * 2)
       ctx.fill()
@@ -263,7 +263,7 @@ export function MoleculeView({ ph }: { ph: number }) {
       ctx.closePath()
       ctx.fillStyle = c
       ctx.fill()
-      ctx.strokeStyle = 'rgba(255,255,255,0.7)'
+      ctx.strokeStyle = 'rgba(17,38,63,0.35)'
       ctx.lineWidth = 1.5
       ctx.stroke()
       // side group
@@ -276,12 +276,12 @@ export function MoleculeView({ ph }: { ph: number }) {
         ctx.beginPath()
         ctx.arc(24, 0, 5, 0, Math.PI * 2)
         ctx.fill()
-        ctx.fillStyle = '#2b0614'
+        ctx.fillStyle = '#ffffff'
         ctx.font = '700 7px "JetBrains Mono Variable", monospace'
         ctx.textAlign = 'center'
         ctx.fillText('H', 24, 2.5)
       } else {
-        ctx.fillStyle = '#ffffff'
+        ctx.fillStyle = '#e8eefc'
         ctx.beginPath()
         ctx.arc(23, 0, 4.5, 0, Math.PI * 2)
         ctx.fill()
@@ -295,7 +295,7 @@ export function MoleculeView({ ph }: { ph: number }) {
 
     const draw = () => {
       ctx.clearRect(0, 0, W, H)
-      ctx.fillStyle = 'rgba(160, 210, 255, 0.12)'
+      ctx.fillStyle = 'rgba(42, 140, 240, 0.10)'
       for (const w of waters) {
         ctx.beginPath()
         ctx.arc(w.x, w.y + Math.sin(w.a) * 4, 2.5, 0, Math.PI * 2)

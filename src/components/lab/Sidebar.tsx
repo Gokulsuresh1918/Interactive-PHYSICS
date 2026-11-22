@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { CheckCircle2, Flag, Flame, FlaskConical, Trophy } from 'lucide-react'
+import { CheckCircle2, Flame, FlaskConical, Trophy } from 'lucide-react'
 import { AnimatedNumber } from '../common/AnimatedNumber'
 import { TOTAL_EXPERIMENTS, useSession } from '../../state/session'
 import { rankFor } from '../../lib/scoring'
 import './sidebar.css'
 
 /** Persistent scoreboard: always visible while experimenting. */
-export function Sidebar({ onFinish }: { onFinish: () => void }) {
+export function Sidebar() {
   const { state, completed } = useSession()
   const reduce = useReducedMotion()
   const [gains, setGains] = useState<{ id: number; pts: number }[]>([])
@@ -35,7 +35,7 @@ export function Sidebar({ onFinish }: { onFinish: () => void }) {
   const initial = state.name.charAt(0).toUpperCase()
 
   return (
-    <aside className="sidebar glass" aria-label="Scoreboard">
+    <aside className="sidebar" aria-label="Scoreboard">
       <div className="sb-profile">
         <span className="sb-avatar">{initial}</span>
         <div className="sb-who">
@@ -47,6 +47,16 @@ export function Sidebar({ onFinish }: { onFinish: () => void }) {
       </div>
 
       <div className="sb-score">
+        {!reduce && gains.length > 0 && (
+          <motion.span
+            key={gains[gains.length - 1].id}
+            className="sb-flash"
+            initial={{ opacity: 0.9, scale: 0.96 }}
+            animate={{ opacity: 0, scale: 1.08 }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            aria-hidden="true"
+          />
+        )}
         <span className="sb-score-label">
           <Trophy size={15} /> Score
         </span>
@@ -112,9 +122,6 @@ export function Sidebar({ onFinish }: { onFinish: () => void }) {
         <p className="sb-best">Best streak: {state.bestStreak}</p>
       </div>
 
-      <button className={`btn sb-finish${completed === TOTAL_EXPERIMENTS ? ' btn-primary' : ''}`} onClick={onFinish}>
-        <Flag size={16} /> {completed === TOTAL_EXPERIMENTS ? 'See my results' : 'Finish session'}
-      </button>
     </aside>
   )
 }
