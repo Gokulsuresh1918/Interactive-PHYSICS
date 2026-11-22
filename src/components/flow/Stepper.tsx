@@ -2,11 +2,12 @@ import { motion } from 'framer-motion'
 import { Check } from 'lucide-react'
 
 /** Shows where the student is in the current experiment. */
-export function Stepper({ steps, current }: { steps: string[]; current: number }) {
+export function Stepper({ steps, current, done }: { steps: string[]; current: number; done?: boolean[] }) {
   return (
     <ol className="stepper" aria-label="Experiment progress">
       {steps.map((label, i) => {
-        const state = i < current ? 'done' : i === current ? 'current' : 'todo'
+        // With explicit completion flags (topics), show real progress; otherwise it's a linear flow.
+        const state = i === current ? 'current' : (done ? done[i] : i < current) ? 'done' : 'todo'
         return (
           <li key={label} className={`stepper-item is-${state}`} aria-current={state === 'current' ? 'step' : undefined}>
             <span className="stepper-dot">

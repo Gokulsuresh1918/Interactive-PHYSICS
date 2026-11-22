@@ -2,8 +2,11 @@ import { useEffect, useRef } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { FlaskConical, Home, RotateCcw, ArrowLeft } from 'lucide-react'
 import { AnimatedNumber } from '../common/AnimatedNumber'
-import { TOTAL_EXPERIMENTS, useSession } from '../../state/session'
+import { useSession } from '../../state/session'
 import type { AnswerRecord, ChallengeCategory } from '../../state/session'
+import { ALL_CATEGORIES, TOTAL_ACTIVITIES, countAllDone } from '../../topics/registry'
+import { Leaderboard } from '../classroom/Leaderboard'
+import { Avatar } from '../common/Avatar'
 import { sfx } from '../../lib/sound'
 import { rankFor } from '../../lib/scoring'
 import './results.css'
@@ -17,27 +20,25 @@ const TIER_INFO: Record<Tier, { badge: string; colors: [string, string] }> = {
   start: { badge: 'Lab Explorer', colors: ['#bfe9ff', '#2a8cf0'] },
 }
 
-const CATEGORY_NAME: Record<ChallengeCategory, string> = {
-  litmus: 'Litmus reading',
-  ph: 'pH estimation',
-  mystery: 'Mystery solving',
-}
+const CATEGORY_NAME = ALL_CATEGORIES
 
-const PRACTICE_TIP: Record<ChallengeCategory, string> = {
+const PRACTICE_TIP: Record<string, string> = {
   litmus: 'test both red and blue strips, then check which one changed colour.',
   ph: 'compare the beaker colour with the pH scale cell by cell before placing your marker.',
   mystery: 'run every test (litmus, indicator and conductivity) before you decide.',
+  optics: 'watch the angles from the dashed normal line as you move the laser.',
+  circuits: 'trace the loop with your finger — every gap must be filled with a conductor.',
+  motion: 'change one thing at a time (mass OR force) and compare the acceleration.',
+  gravity: 'change one quantity at a time and watch the “compared with start” number.',
+  sound: 'count the waves for frequency and look at the wave height for amplitude.',
 }
 
 function categoryStats(answered: Record<string, AnswerRecord>) {
-  const stats: Record<ChallengeCategory, { right: number; total: number }> = {
-    litmus: { right: 0, total: 0 },
-    ph: { right: 0, total: 0 },
-    mystery: { right: 0, total: 0 },
-  }
+  const stats: Record<string, { right: number; total: number }> = {}
   for (const rec of Object.values(answered)) {
     for (const r of rec.results) {
       if (r.kind === 'bonus') continue
+      stats[rec.category] ??= { right: 0, total: 0 }
       stats[rec.category].total++
       if (r.outcome === 'correct') stats[rec.category].right++
     }
@@ -54,7 +55,9 @@ export function ResultsScreen({
   onHome: () => void
   onBack: () => void
 }) {
-  const { state, completed } = useSession()
+  const { state, profile, leaderboard } = useSession()
+  const completed = countAllDone(state.answered)
+  const TOTAL_EXPERIMENTS = TOTAL_ACTIVITIES
   const reduce = useReducedMotion()
   const played = useRef(false)
   const accuracy = state.attempted ? Math.round((state.correct / state.attempted) * 100) : 0
@@ -122,6 +125,11 @@ export function ResultsScreen({
           transition={{ delay: 0.25, type: 'spring', stiffness: 160, damping: 12 }}
         >
           <Medal colors={info.colors} />
+          {profile && (
+            <span className="badge-avatar">
+              <Avatar seed={profile.seed} name={profile.name} size={56} ring />
+            </span>
+          )}
         </motion.div>
         <div className="results-copy">
           <p className="eyebrow">Session complete · {state.name}</p>
@@ -155,14 +163,15 @@ export function ResultsScreen({
         ))}
       </section>
 
+      <div className="results-lower">
       <section className="results-skills card">
-        {(Object.keys(stats) as ChallengeCategory[]).map((c) => {
-          const s = stats[c]
+        {(Object.keys(stats).length ? (Object.keys(stats) as ChallengeCategory[]) : ['litmus', 'ph', 'mystery']).map((c) => {
+          const s = stats[c] ?? { right: 0, total: 0 }
           const pct = s.total ? Math.round((s.right / s.total) * 100) : 0
           return (
             <div key={c} className="skill">
               <div className="skill-head">
-                <span>{CATEGORY_NAME[c]}</span>
+                <span>{CATEGORY_NAME[c] ?? c}</span>
                 <span>{s.total ? `${s.right}/${s.total}` : 'not tried'}</span>
               </div>
               <div className="skill-track">
@@ -172,10 +181,15 @@ export function ResultsScreen({
           )
         })}
       </section>
+      <section className="results-board card">
+        <Leaderboard entries={leaderboard} activeId={profile?.id ?? null} expanded />
+        <p className="fine">The leaderboard keeps each student’s best run on this computer.</p>
+      </section>
+      </div>
 
       <div className="results-actions">
         <button className="btn btn-primary" onClick={onReplay}>
-          <RotateCcw size={16} /> Play again (fresh session)
+          <RotateCcw size={16} /> Play again (new run)
         </button>
         {completed < TOTAL_EXPERIMENTS && (
           <button className="btn" onClick={onBack}>

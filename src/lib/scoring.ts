@@ -13,7 +13,7 @@ export const POINTS = {
 }
 
 export type Outcome = 'correct' | 'close' | 'wrong'
-export type QuestionKind = 'nature' | 'ph' | 'identity' | 'bonus'
+export type QuestionKind = 'nature' | 'ph' | 'identity' | 'bonus' | 'question'
 
 export interface QuestionResult {
   kind: QuestionKind

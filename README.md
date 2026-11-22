@@ -1,8 +1,18 @@
 # Science Playground
 
-An interactive virtual science lab for secondary-school students. The main experience is **Acids, Bases & pH**. Students enter their name, choose a sample, run an experiment, watch the reaction, answer one question at a time and build their score.
+An interactive virtual science lab for secondary-school students.
 
-Frontend only: React 19 + TypeScript + Vite, Framer Motion, SVG/Canvas, and Web Audio. There is no backend or login, and progress is kept in `sessionStorage`.
+- **Acids, Bases & pH** is the main experience (default route `/`).
+- Five physics labs are linked from the footer:
+  - Reflection & Refraction (`#/optics`)
+  - Electricity & Circuits (`#/circuits`)
+  - Newton's Laws of Motion (`#/motion`)
+  - Gravitation (`#/gravity`)
+  - Sound Waves (`#/sound`)
+
+It is frontend only (React 19 + TypeScript + Vite). There is no backend, login or database. Student profiles and the class leaderboard are saved in `localStorage`, so they are **shared by everyone using the same browser on the same computer** and are not synced between devices.
+
+![Welcome](docs/screenshots/welcome.webp)
 
 ## Run
 
@@ -10,36 +20,42 @@ Frontend only: React 19 + TypeScript + Vite, Framer Motion, SVG/Canvas, and Web 
 npm install
 npm run dev      # http://localhost:5173
 npm run build    # type-check + production build into dist/
+npm run lint     # oxlint
 ```
 
 ## Student flow
 
-1. **Welcome:** enter a name.
-2. **Choose a sample:** known substances, or a mystery sample.
-3. **Choose a test:** litmus or universal indicator. Mystery samples get a case file with clues and paid hints instead.
-4. **Observe:** a focused beaker scene with only the tools for that test.
-5. **Predict:** one question per screen, with the evidence shown alongside.
-6. **Result:** feedback, points, an optional "Why does the colour change?" molecule popup, and a single "Next" action.
+Every topic follows the same simple pattern: enter a name, read one instruction, experiment, observe, answer one question per screen, get feedback and points, then continue. A stepper shows where you are. The scoreboard and class leaderboard stay visible in the sidebar, and become a compact bar on small screens.
 
-The score sidebar (a compact bar on small screens) stays visible the whole time.
+| Acids, Bases & pH | Reflection & Refraction |
+|---|---|
+| ![Samples](docs/screenshots/acids-samples.webp) | ![Optics](docs/screenshots/optics.webp) |
+| **Electricity & Circuits** | **Newton's Laws** |
+| ![Circuits](docs/screenshots/circuits.webp) | ![Motion](docs/screenshots/motion.webp) |
+| **Gravitation** | **Sound Waves** |
+| ![Gravity](docs/screenshots/gravity.webp) | ![Sound](docs/screenshots/sound.webp) |
+
+## Classroom features
+
+- **Profiles:** entering the same name continues that student's profile. Each student gets a DiceBear avatar, generated locally from the name.
+- **Leaderboard:** shows the top 10, sorted by score. Ties go to whoever reached the score first. Rows animate when students overtake each other, and toasts plus confetti celebrate moving into the top 3.
+- **No farming:** each challenge scores once per run. "Play again" starts a new run, while the leaderboard keeps each student's best run.
+- **Clear all data** (in the footer, with a confirmation dialog) deletes every profile, score and piece of progress on this browser. The sound setting is kept.
 
 ## Where things live
 
 | Area | Files |
 |---|---|
-| Sample properties (pH, litmus, conductivity, clues) | `src/data/samples.ts` |
-| Mystery samples (reuse known sample data) | `src/data/mysteries.ts` |
-| Future topics shown in the footer | `src/data/topics.ts` |
-| Chemistry rules (indicator colours, litmus) | `src/lib/chemistry.ts` |
-| Points, partial credit, hints, ranks | `src/lib/scoring.ts` |
-| Generated sound effects | `src/lib/sound.ts` |
-| Session state (score, streak, no-farming guard) | `src/state/session.tsx` |
-| Step-by-step flow (chooser, known, mystery, stepper) | `src/components/flow/` |
-| Lab building blocks (beaker, tools, pH scale, molecules, sidebar) | `src/components/lab/` |
-| Top bar, footer, modal, background | `src/components/common/` |
+| Classroom store (profiles, runs, leaderboard) | `src/state/session.tsx` |
+| Topic registry (all six topics, lazy pages) | `src/topics/registry.ts` |
+| Shared physics flow (intro → explore → question → feedback → summary) | `src/topics/TopicFlow.tsx` |
+| Physics topics: content + simulations | `src/topics/{optics,circuits,motion,gravity,sound}/` |
+| Acids & bases data, chemistry, scoring | `src/data/`, `src/lib/chemistry.ts`, `src/lib/scoring.ts` |
+| Acids & bases flow | `src/components/flow/` |
+| Lab building blocks (beaker, pH scale, molecules, sidebar) | `src/components/lab/` |
+| Leaderboard + rank toasts | `src/components/classroom/` |
+| Sample photos + credits | `public/images/samples/`, `src/data/imageCredits.ts` |
 
-## Adding a topic later
+## Credits
 
-Topics listed in `src/data/topics.ts` with `available: false` appear in the footer as "Coming soon". To build one, give it its own page or route and flip `available` to `true`.
-
-pH values are typical approximations. Real values vary with concentration and brand.
+Sample photos come from Wikimedia Commons under free licences (public domain, CC BY, CC BY-SA); see **Image credits** in the app footer. Chemical reactions and colours are driven by the scientific data, not by the photos. pH values are typical approximations.

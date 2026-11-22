@@ -283,9 +283,37 @@
 
 @media (max-width: 520px) {
   .entry-row {
-    flex-direction: column;
+    flex-wrap: wrap;
+  }
+  .entry-input {
+    flex: 1 1 160px;
   }
   .entry-start {
     width: 100%;
   }
+}
+
+.entry-row {
+  align-items: center;
+}
+.entry-avatar {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+}
+.entry-leader {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 13.5px;
+  color: var(--text-dim);
+}
+.entry-leader > svg {
+  color: var(--gold);
+}
+.entry-leader strong {
+  color: var(--text);
 }

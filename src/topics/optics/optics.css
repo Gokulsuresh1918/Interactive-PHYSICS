@@ -1,0 +1,72 @@
+.optics-stage {
+  background:
+    radial-gradient(60% 70% at 50% 85%, #fff4f6 0%, transparent 70%),
+    linear-gradient(180deg, #f4f8ff, #fbfdff);
+  cursor: crosshair;
+}
+
+.beam-photons {
+  animation: photons 0.7s linear infinite;
+}
+@keyframes photons {
+  to {
+    stroke-dashoffset: -25;
+  }
+}
+
+.angle-text {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 800;
+}
+.svg-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  fill: #5b6f8c;
+}
+.tick-text {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  fill: #8195ad;
+}
+.medium-label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  fill: #4d6582;
+}
+.tir-text {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 800;
+  fill: #ff2d55;
+}
+
+.laser {
+  cursor: grab;
+}
+.laser.is-dragging {
+  cursor: grabbing;
+}
+.laser-halo {
+  animation: laser-halo 1.8s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes laser-halo {
+  50% {
+    transform: scale(1.25);
+    opacity: 0.5;
+  }
+}
+
+.tir-check {
+  display: flex;
+  align-items: flex-end;
+}
+
+.optics-stage > svg {
+  overflow: visible;
+}

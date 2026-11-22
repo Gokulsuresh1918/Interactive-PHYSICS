@@ -9,7 +9,6 @@ import { POINTS, scoreNature, scorePh } from '../../lib/scoring'
 import { sfx } from '../../lib/sound'
 import { useSession } from '../../state/session'
 import { Modal } from '../common/Modal'
-import { Bottle } from '../lab/Bottle'
 import { FeedbackCard } from '../lab/FeedbackCard'
 import { MoleculeView } from '../lab/MoleculeView'
 import { NaturePicker } from '../lab/NaturePicker'
@@ -112,7 +111,7 @@ export function KnownFlow({ sampleId, onChooseSample, onOpenSample, onFinish }: 
               <div className="screen-head">
                 <div className="screen-title-row">
                   <span className="screen-bottle">
-                    <Bottle color={sample.liquidColor} opacity={Math.max(0.5, sample.liquidOpacity)} cap={sample.cap} />
+                    <img src={`/images/samples/${sample.id}.webp`} alt={sample.name} width={84} height={84} />
                   </span>
                   <div>
                     <p className="eyebrow">Sample: {sample.name}</p>

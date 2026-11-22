@@ -1,0 +1,36 @@
+.motion-stage > svg {
+  max-height: min(50vh, 420px);
+  overflow: visible;
+}
+.motion-stage {
+  background: #eef2f8;
+}
+.mark-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  fill: #6c84a2;
+}
+.arrow-text {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+}
+.skater-label {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 800;
+}
+.motion-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.motion-actions .btn-primary {
+  flex: 1;
+  min-width: 140px;
+}
+.readout.runs strong {
+  font-size: 12.5px;
+}

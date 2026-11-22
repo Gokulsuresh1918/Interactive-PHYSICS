@@ -401,8 +401,8 @@ function Verdict({
         animate={{ rotateX: 0, opacity: 1 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
-        <span className="reveal-bottle">
-          <Bottle color={sample.liquidColor} opacity={Math.max(0.5, sample.liquidOpacity)} cap={sample.cap} />
+        <span className="reveal-photo">
+          <img src={`/images/samples/${sample.id}.webp`} alt={sample.name} width={160} height={120} />
         </span>
         <span className="reveal-code">Unknown #{mystery.code} was…</span>
         <span className="reveal-name">{sample.name}</span>

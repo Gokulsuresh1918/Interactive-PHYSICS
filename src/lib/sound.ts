@@ -7,8 +7,23 @@ let ctx: AudioContext | null = null
 let enabled = true
 const MASTER = 0.5
 
+const listeners = new Set<(on: boolean) => void>()
+
 export function setSoundEnabled(on: boolean) {
   enabled = on
+  listeners.forEach((l) => l(on))
+}
+
+export function soundEnabled() {
+  return enabled
+}
+
+/** Subscribe to the global sound toggle (used to stop continuous tones when muted). */
+export function onSoundToggle(fn: (on: boolean) => void) {
+  listeners.add(fn)
+  return () => {
+    listeners.delete(fn)
+  }
 }
 
 function audio(): AudioContext | null {
@@ -113,4 +128,28 @@ export const sfx = {
       tone({ freq: f, dur: 0.35, type: 'triangle', gain: 0.06, delay: i * 0.11 }),
     )
   },
+}
+
+/** A continuous, adjustable tone for the sound lab. Quiet by design. */
+export function createTone(freq: number, volume: number) {
+  const a = audio()
+  if (!a) return null
+  const osc = a.createOscillator()
+  const g = a.createGain()
+  osc.type = 'sine'
+  osc.frequency.value = freq
+  g.gain.setValueAtTime(0.0001, a.currentTime)
+  g.gain.exponentialRampToValueAtTime(Math.max(0.0002, volume * 0.12 * MASTER), a.currentTime + 0.08)
+  osc.connect(g).connect(a.destination)
+  osc.start()
+  return {
+    set(f: number, v: number) {
+      osc.frequency.setTargetAtTime(f, a.currentTime, 0.03)
+      g.gain.setTargetAtTime(Math.max(0.0002, v * 0.12 * MASTER), a.currentTime, 0.03)
+    },
+    stop() {
+      g.gain.setTargetAtTime(0.0001, a.currentTime, 0.04)
+      osc.stop(a.currentTime + 0.2)
+    },
+  }
 }

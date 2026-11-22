@@ -1,0 +1,57 @@
+.sound-stage {
+  background:
+    linear-gradient(180deg, #fff7fb 0%, #ffffff 40%),
+    #fff;
+  min-height: 360px;
+}
+.sound-stage canvas {
+  display: block;
+}
+.sound-meters {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--border);
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #c2255c;
+}
+.meter.is-match {
+  background: var(--good-soft);
+  border-color: var(--good-border);
+  color: var(--good);
+}
+.meter-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.meter-bars i {
+  width: 4px;
+  border-radius: 2px;
+  background: #f3d3e0;
+}
+.meter-bars i:nth-child(1) { height: 4px; }
+.meter-bars i:nth-child(2) { height: 5px; }
+.meter-bars i:nth-child(3) { height: 6px; }
+.meter-bars i:nth-child(4) { height: 8px; }
+.meter-bars i:nth-child(5) { height: 9px; }
+.meter-bars i:nth-child(6) { height: 11px; }
+.meter-bars i:nth-child(7) { height: 12px; }
+.meter-bars i:nth-child(8) { height: 14px; }
+.meter-bars i.is-on {
+  background: #12b3a2;
+}

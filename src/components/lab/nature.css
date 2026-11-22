@@ -1,0 +1,155 @@
+.nature {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.nature-opt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 16px 10px 18px;
+  border-radius: var(--radius-l);
+  border: 2px solid var(--border);
+  background: linear-gradient(180deg, var(--soft) 0%, #ffffff 70%);
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+.nature-opt:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--tone) 45%, white);
+  box-shadow: 0 14px 28px -20px var(--tone);
+}
+.nature-opt.is-selected {
+  border-color: var(--tone);
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--tone) 18%, transparent),
+    0 16px 30px -20px var(--tone);
+}
+.nature-art {
+  width: 100%;
+  max-width: 150px;
+  height: 92px;
+}
+.nature-art svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.nature-label {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--tone);
+}
+.nature-sub {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-align: center;
+}
+.nature-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--tone);
+  color: #fff;
+}
+
+/* Art animations play on hover / selection only, to keep the screen calm. */
+.art-drip,
+.art-bubble,
+.art-ripple,
+.art-float {
+  animation-play-state: paused;
+}
+.nature-opt:hover .art-drip,
+.nature-opt.is-selected .art-drip,
+.nature-opt:hover .art-bubble,
+.nature-opt.is-selected .art-bubble,
+.nature-opt:hover .art-ripple,
+.nature-opt.is-selected .art-ripple,
+.nature-opt:hover .art-float,
+.nature-opt.is-selected .art-float {
+  animation-play-state: running;
+}
+.art-drip {
+  animation: drip 1.4s ease-in infinite;
+}
+.art-drip-2 {
+  animation-delay: 0.45s;
+}
+.art-drip-3 {
+  animation-delay: 0.9s;
+}
+@keyframes drip {
+  0% {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+}
+.art-bubble {
+  animation: bubble-rise 2.2s ease-in-out infinite;
+}
+@keyframes bubble-rise {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.art-ripple {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ripple 2s ease-out infinite;
+}
+.art-ripple-2 {
+  animation-delay: 1s;
+}
+@keyframes ripple {
+  from {
+    transform: scale(0.4);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+.art-float {
+  animation: float 2.4s ease-in-out infinite;
+}
+@keyframes float {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@media (max-width: 720px) {
+  .nature {
+    gap: 8px;
+  }
+  .nature-art {
+    height: 64px;
+  }
+  .nature-label {
+    font-size: 17px;
+  }
+  .nature-sub {
+    display: none;
+  }
+}

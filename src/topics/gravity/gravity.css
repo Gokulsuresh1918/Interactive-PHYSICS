@@ -1,0 +1,33 @@
+.gravity-stage {
+  background:
+    radial-gradient(70% 90% at 50% 50%, #ffffff 0%, transparent 70%),
+    linear-gradient(180deg, #f1edff 0%, #e8e3ff 100%);
+}
+.grav-label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 800;
+  fill: #5f3dc4;
+}
+.grav-name {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  fill: #2c2560;
+}
+.grav-flow {
+  animation: grav-flow 1s linear infinite;
+}
+@keyframes grav-flow {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+.twinkle {
+  animation: twinkle 2.4s ease-in-out infinite alternate;
+}
+@keyframes twinkle {
+  to {
+    opacity: 0.1;
+  }
+}

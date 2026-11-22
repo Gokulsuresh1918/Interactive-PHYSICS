@@ -1,10 +1,13 @@
 .sidebar {
   position: sticky;
-  top: 86px;
+  top: 76px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 18px;
+  gap: 12px;
+  padding: 16px;
+  max-height: calc(100vh - 92px);
+  overflow-y: auto;
+  scrollbar-width: thin;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-l);
@@ -16,20 +19,8 @@
   align-items: center;
   gap: 12px;
 }
-.sb-avatar {
-  flex: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 19px;
-  color: #fff;
-  background: linear-gradient(135deg, var(--sky), var(--teal));
-}
 .sb-who {
+  flex: 1;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -37,8 +28,7 @@
 .sb-name {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 16px;
-  letter-spacing: 0.03em;
+  font-size: 17px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -48,10 +38,15 @@
   font-weight: 700;
   color: var(--lavender);
 }
+.sb-switch {
+  width: 34px;
+  min-height: 34px;
+  color: var(--text-faint);
+}
 
 .sb-score {
   position: relative;
-  padding: 14px 16px;
+  padding: 12px 14px;
   border-radius: var(--radius);
   background: linear-gradient(135deg, #fff8e6, #fffdf6);
   border: 1px solid var(--warn-border);
@@ -69,10 +64,21 @@
   text-transform: uppercase;
   color: var(--warn);
 }
+.sb-place {
+  margin-left: auto;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: #a35f00;
+  background: #ffefc7;
+  padding: 1px 8px;
+  border-radius: 999px;
+}
 .sb-score-value {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 42px;
+  font-size: 40px;
   line-height: 1.05;
   font-variant-numeric: tabular-nums;
   color: var(--text);
@@ -80,7 +86,7 @@
 .sb-gain {
   position: absolute;
   right: 16px;
-  top: 26px;
+  top: 30px;
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 22px;
@@ -106,9 +112,17 @@
   flex-direction: column;
   align-items: center;
   gap: 1px;
-  padding: 10px 4px;
+  padding: 8px 4px;
   border-radius: 14px;
   background: var(--surface-2);
+  border: 0;
+}
+.sb-board-btn {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sb-board-btn:hover {
+  background: #fff3d6;
 }
 .sb-stat-icon {
   display: grid;
@@ -123,13 +137,13 @@
 .sb-icon-good {
   color: var(--good);
 }
-.sb-icon-accent {
-  color: var(--sky);
+.sb-icon-gold {
+  color: var(--gold);
 }
 .sb-stat-value {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 18px;
+  font-size: 17px;
   font-variant-numeric: tabular-nums;
 }
 .sb-stat-label {
@@ -146,6 +160,14 @@
   color: var(--text-dim);
   margin-bottom: 6px;
 }
+.sb-progress-head span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.sb-progress-head svg {
+  color: var(--topic);
+}
 .sb-progress-track {
   height: 9px;
   border-radius: 999px;
@@ -155,44 +177,43 @@
 .sb-progress-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--teal), var(--sky));
+  background: var(--topic, var(--sky));
 }
-.sb-best {
-  margin-top: 6px;
-  font-size: 12px;
-  color: var(--text-faint);
+
+.sb-board {
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
 }
 
 /* Compact score bar on smaller screens */
 @media (max-width: 1100px) {
   .sidebar {
-    top: 68px;
+    top: 62px;
     z-index: 30;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     gap: 8px 12px;
     padding: 10px 14px;
+    max-height: none;
+    overflow: visible;
     border-radius: var(--radius);
   }
   .sb-profile {
-    flex: 1 1 150px;
+    flex: 1 1 170px;
     min-width: 0;
-  }
-  .sb-avatar {
-    width: 34px;
-    height: 34px;
-    font-size: 15px;
-    border-radius: 10px;
   }
   .sb-score {
     flex-direction: row;
     align-items: center;
     gap: 10px;
-    padding: 4px 14px;
+    padding: 4px 12px;
   }
   .sb-score-value {
     font-size: 24px;
+  }
+  .sb-place {
+    display: none;
   }
   .sb-gain {
     top: -8px;
@@ -214,9 +235,9 @@
     display: none;
   }
   .sb-progress {
-    flex: 1 1 140px;
+    flex: 1 1 160px;
   }
-  .sb-best {
+  .sb-board {
     display: none;
   }
 }

@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { CheckCircle2, Lightbulb, Sparkles } from 'lucide-react'
 import type { Outcome } from '../../lib/scoring'
 import { sfx } from '../../lib/sound'
+import { celebrate } from '../../lib/celebrate'
 import './feedback.css'
 
 interface FeedbackCardProps {
@@ -21,17 +22,22 @@ export function FeedbackCard({ outcome, points, title, children, fresh }: Feedba
   const Icon = ICON[outcome]
   const reduce = useReducedMotion()
   const played = useRef(false)
+  const cardRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!fresh || played.current) return
     played.current = true
-    if (outcome === 'correct') sfx.correct()
+    if (outcome === 'correct') {
+      sfx.correct()
+      celebrate(cardRef.current)
+    }
     else if (outcome === 'close') sfx.close()
     else sfx.wrong()
   }, [fresh, outcome])
 
   return (
     <motion.div
+      ref={cardRef}
       className={`feedback feedback-${outcome}`}
       initial={fresh ? { opacity: 0, y: 12, scale: 0.98 } : false}
       animate={

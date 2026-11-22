@@ -108,10 +108,30 @@
   font-weight: 600;
 }
 
+.results-lower {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+.results-board {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.badge {
+  position: relative;
+}
+.badge-avatar {
+  position: absolute;
+  right: -6px;
+  bottom: -4px;
+}
 .results-skills {
   padding: 18px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
   border-radius: var(--radius);
 }
@@ -174,7 +194,8 @@
   .results-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .results-skills {
+  .results-skills,
+  .results-lower {
     grid-template-columns: 1fr;
   }
 }

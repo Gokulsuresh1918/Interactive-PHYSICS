@@ -154,9 +154,19 @@
   border: 1px solid #ddd6fe;
   transform-origin: top;
 }
-.reveal-bottle {
-  width: 70px;
-  margin-bottom: 6px;
+.reveal-photo {
+  width: 100%;
+  max-width: 180px;
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  box-shadow: 0 0 0 4px #fff, var(--shadow);
+}
+.reveal-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .reveal-code {
   font-family: var(--font-mono);

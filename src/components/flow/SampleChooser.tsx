@@ -57,7 +57,7 @@ export function SampleChooser({ tab, onTab, onPickSample, onPickMystery }: Sampl
               <motion.button
                 key={s.id}
                 variants={item}
-                className={`sample-card${litmus && ph ? ' is-complete' : ''}`}
+                className={`sample-card sample-card-photo${litmus && ph ? ' is-complete' : ''}`}
                 onClick={() => {
                   sfx.select()
                   onPickSample(s.id)
@@ -65,9 +65,11 @@ export function SampleChooser({ tab, onTab, onPickSample, onPickMystery }: Sampl
                 whileHover={{ y: -6 }}
                 whileTap={{ scale: 0.96 }}
               >
-                <span className="sample-glow" style={{ background: s.cap }} aria-hidden="true" />
-                <span className="sample-bottle">
-                  <Bottle color={s.liquidColor} opacity={Math.max(0.5, s.liquidOpacity)} cap={s.cap} />
+                <span className="sample-photo">
+                  <img src={`/images/samples/${s.id}.webp`} alt="" loading="lazy" width={480} height={360} draggable={false} />
+                  <span className="sample-swatch" style={{ background: s.liquidColor }} aria-hidden="true">
+                    <i style={{ background: s.cap }} />
+                  </span>
                 </span>
                 <span className="sample-name">{s.name}</span>
                 <span className="sample-progress" aria-label={`Litmus ${litmus ? 'done' : 'not done'}, pH ${ph ? 'done' : 'not done'}`}>
