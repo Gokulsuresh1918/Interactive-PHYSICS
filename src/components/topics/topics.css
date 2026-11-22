@@ -1,0 +1,66 @@
+.topics {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-bottom: 40px;
+}
+
+.topics-head h1 {
+  font-size: clamp(28px, 4vw, 44px);
+  margin: 6px 0;
+}
+
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.topic {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 22px;
+  text-align: left;
+  cursor: pointer;
+  border-color: color-mix(in srgb, var(--hue) 35%, transparent);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--hue) 14%, transparent), var(--surface) 60%);
+}
+.topic.is-locked {
+  cursor: default;
+  filter: saturate(0.4);
+  opacity: 0.7;
+}
+
+.topic-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  color: var(--hue);
+  background: color-mix(in srgb, var(--hue) 16%, transparent);
+  margin-bottom: 6px;
+}
+.topic-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 19px;
+}
+.topic-tag {
+  font-size: 13.5px;
+  color: var(--text-dim);
+}
+.topic-cta {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--hue);
+}
+.topic.is-locked .topic-cta {
+  color: var(--text-faint);
+}

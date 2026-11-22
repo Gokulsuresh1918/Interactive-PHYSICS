@@ -1,0 +1,117 @@
+.mol {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 18px;
+}
+
+.mol-stage {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background:
+    radial-gradient(400px 200px at 50% 40%, rgba(62, 230, 255, 0.08), transparent 70%),
+    rgba(4, 12, 30, 0.7);
+  border: 1px solid var(--border);
+  min-height: 300px;
+}
+.mol-stage canvas {
+  display: block;
+}
+
+.mol-badge {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+.mol-replay {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.mol-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.mol-legend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 12px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+.mol-legend span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.mol-legend .dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+.mol-legend .hex {
+  width: 13px;
+  height: 13px;
+  clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0 50%);
+}
+
+.mol-mix-bar {
+  display: flex;
+  height: 12px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+}
+.mol-mix-bar span {
+  flex-basis: 0;
+  transition: flex-grow 0.5s var(--ease-out);
+}
+.mol-mix-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text-faint);
+}
+
+.mol-text {
+  font-size: 13.5px;
+  color: var(--text-dim);
+}
+.mol-text strong {
+  color: var(--text);
+}
+
+.mol-result {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.mol-result i {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 900px) {
+  .mol {
+    grid-template-columns: 1fr;
+  }
+}

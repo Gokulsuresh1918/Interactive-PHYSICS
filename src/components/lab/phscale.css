@@ -1,0 +1,182 @@
+.ph {
+  --cell-h: 46px;
+  position: relative;
+  user-select: none;
+}
+
+.ph-regions {
+  display: grid;
+  grid-template-columns: 7fr 1fr 7fr;
+  margin-bottom: 4px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ph-region {
+  padding: 4px 0;
+  border-top: 2px solid;
+}
+.ph-region-acid {
+  color: #ff8a6a;
+  border-color: rgba(255, 110, 80, 0.5);
+}
+.ph-region-neutral {
+  color: #74e08a;
+  border-color: rgba(76, 187, 71, 0.6);
+  text-align: center;
+}
+.ph-region-base {
+  color: #9bb2ff;
+  border-color: rgba(110, 120, 255, 0.5);
+  text-align: right;
+}
+
+.ph-marker-lane {
+  position: relative;
+  height: 44px;
+}
+
+.ph-marker {
+  position: absolute;
+  bottom: 0;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.ph-marker-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #f4fbff;
+  color: #06162e;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.6);
+}
+.ph-marker-bubble i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--swatch);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+.ph-marker-arrow {
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 8px solid #f4fbff;
+}
+
+.ph-track {
+  display: grid;
+  grid-template-columns: repeat(15, minmax(0, 1fr));
+  border-radius: 14px;
+  overflow: hidden;
+  height: var(--cell-h);
+  box-shadow:
+    0 10px 30px -14px rgba(0, 0, 0, 0.8),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  touch-action: none;
+}
+.ph.is-interactive .ph-track {
+  cursor: pointer;
+}
+.ph.is-interactive .ph-track:hover {
+  box-shadow:
+    0 10px 30px -14px rgba(0, 0, 0, 0.8),
+    0 0 0 3px var(--accent-soft);
+}
+
+.ph-cell {
+  position: relative;
+  display: grid;
+  place-items: end center;
+  padding-bottom: 5px;
+  transition:
+    filter 0.2s,
+    transform 0.2s;
+}
+.ph-cell span {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+.ph-cell.is-selected {
+  box-shadow: inset 0 0 0 3px #f4fbff;
+}
+.ph-cell.is-actual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.28) 0 4px, transparent 4px 9px);
+}
+
+.ph-under {
+  position: relative;
+  height: 34px;
+}
+
+.ph-actual {
+  position: absolute;
+  top: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ph-actual-bracket {
+  width: 100%;
+  height: 8px;
+  border: 2px solid var(--good);
+  border-top: 0;
+  border-radius: 0 0 6px 6px;
+}
+.ph-actual-label {
+  margin-top: 3px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--good);
+  white-space: nowrap;
+}
+
+.ph-compare {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+}
+.ph-compare-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.ph-compare-item i {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 640px) {
+  .ph {
+    --cell-h: 40px;
+  }
+  .ph-cell span {
+    font-size: 10.5px;
+  }
+  .ph-regions {
+    font-size: 9px;
+  }
+}

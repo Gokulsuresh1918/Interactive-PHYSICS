@@ -1,0 +1,26 @@
+.screen {
+  min-height: 100vh;
+}
+
+.shell {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 0 clamp(12px, 2.4vw, 28px) 32px;
+}
+
+.lab-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.lab-main {
+  min-width: 0;
+}
+
+@media (max-width: 1080px) {
+  .lab-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

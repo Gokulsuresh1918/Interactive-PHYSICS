@@ -1,0 +1,65 @@
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background:
+    radial-gradient(1200px 700px at 70% -10%, var(--bg-2), transparent 70%),
+    linear-gradient(180deg, var(--bg-1), var(--bg-0) 70%);
+  pointer-events: none;
+}
+
+.ambient-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  will-change: transform;
+}
+
+.ambient-blob-a {
+  width: 620px;
+  height: 620px;
+  left: -160px;
+  top: 10%;
+  background: var(--blob-a);
+  animation: blob-float 26s ease-in-out infinite alternate;
+}
+
+.ambient-blob-b {
+  width: 520px;
+  height: 520px;
+  right: -120px;
+  bottom: -120px;
+  background: var(--blob-b);
+  animation: blob-float 32s ease-in-out infinite alternate-reverse;
+}
+
+.ambient-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(130, 200, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(130, 200, 255, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at 50% 30%, black 20%, transparent 75%);
+}
+
+.ambient-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.ambient-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.45));
+}
+
+@keyframes blob-float {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(80px, -60px) scale(1.12);
+  }
+}
